@@ -18,5 +18,13 @@
     <ClCompile Include="tp4undav.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fileMan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fileMan.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

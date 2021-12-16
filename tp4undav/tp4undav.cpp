@@ -1,89 +1,51 @@
 #include <iostream>
 #include <string>
-#include <fstream>
-#include <vector>
+#include <cstdlib>
+#include "fileMan.h"
 
 struct promotores {
     char nombre[30];
     float porcComision;
 };
 
+struct telefonos {
+    char desc[20];
+    int precio;
+};
 
 bool cargarPromotores();
+bool cargarTelefonos();
 
-int main()
-{
-    if(cargarPromotores())
+int main() {
+
+    int returnStatus = EXIT_FAILURE;
+    if (cargarPromotores() && cargarTelefonos())
         return EXIT_SUCCESS;
-    return EXIT_FAILURE;
+    return returnStatus;
 }
 
 bool cargarPromotores() {
 
-    promotores unPromotor;
-    std::vector <promotores> vectorPromotores;
+    char nombres[10][10] = { {"Juan"},{"Heriberto"},{"Carlos"},{"Maria"},{"Juana"},{"Diana"},{"Leonor"},{"Marcos"},{"Natalia"},{"Nicolas"}};
+    promotores vectorPromotores[10];
 
-    strncpy_s(unPromotor.nombre, "Juan", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 23.5;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Heriberto", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 29.7;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Carlos", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 83.5;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Maria", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 37.7;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Juana", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 55.5;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Diana", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 73.1;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Leonor", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 23.5;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Marcos", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 11.5;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Natalia", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 19.9;
-    vectorPromotores.push_back(unPromotor);
-
-    strncpy_s(unPromotor.nombre, "Nicolas", sizeof(unPromotor.nombre));
-    unPromotor.porcComision = 23.5;
-    vectorPromotores.push_back(unPromotor);
-
-    const auto vector_size = size(vectorPromotores);
-    std::ofstream miArchivo("promotores.dat", std::ios::binary);
-    miArchivo.write(reinterpret_cast<const char*>(&vector_size), sizeof(vector_size));
-    miArchivo.write(reinterpret_cast<const char*>(data(vectorPromotores)), sizeof(decltype(vectorPromotores)::value_type) * vector_size);
-    miArchivo.close();
+    for (int i = 0; i < sizeof(vectorPromotores)/sizeof(vectorPromotores[0]); i++) {
+        strncpy_s(vectorPromotores[i].nombre, nombres[i], sizeof(vectorPromotores[0].nombre));
+        vectorPromotores[i].porcComision = rand() % 100;
+    }
     
-    std::vector <promotores> vectorLeerPromotores;
-    size_t vectorLeer_size;
-    std::ifstream miArchivoLeer("promotores.dat", std::ios::binary);
-    miArchivoLeer.read(reinterpret_cast<char*>(&vectorLeer_size), sizeof(vectorLeer_size));
-    vectorLeerPromotores.resize(vectorLeer_size);
-    miArchivoLeer.read(reinterpret_cast<char*>(data(vectorLeerPromotores)), sizeof(decltype(vectorLeerPromotores)::value_type) * vectorLeer_size);
-    miArchivo.close();
+    return saveVecToFile(vectorPromotores, sizeof(vectorPromotores), "promotores.dat");
+}
 
-    for (const promotores& element : vectorLeerPromotores) {
-        std::cout << element.nombre << std::endl;
-        std::cout << element.porcComision << std::endl;
+bool cargarTelefonos() {
+    
+    char modelos[10][10] = { {"Nokia1"},{"Moto1"},{"Alcatel1"},{"Uauei1"},{"Nokia2"},{"Nokia3"},{"Samsung7"},{"Moto2"},{"Moto3"},{"Alcatel2"} };
+    telefonos vectorTelefonos[10];
+
+    for (int i = 0; i < sizeof(vectorTelefonos) / sizeof(vectorTelefonos[0]); i++) {
+        strncpy_s(vectorTelefonos[i].desc, modelos[i], sizeof(vectorTelefonos[0].desc));
+        vectorTelefonos[i].precio = rand() % 100;
     }
 
-    if(vectorLeerPromotores.size() > 0)
-        return true;
-    return false;
-
+    return saveVecToFile(vectorTelefonos, sizeof(vectorTelefonos), "telefonos.dat");
 }
