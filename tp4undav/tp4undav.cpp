@@ -79,11 +79,37 @@ bool generarVentasValidasInvalidas() {
     
     bool exit_success = false;
     venta vecVentas[TOPE_VECTOR];
+    venta vecVentasValidas[TOPE_VECTOR];
+    venta vecVentasInvalidas[TOPE_VECTOR];
+    int cantidad_validas = 0, cantidad_invalidas = 0;
     telefonos vecTelefonos[TOPE_VECTOR];
     promotores vecPromotores[TOPE_VECTOR];
     if (readVecFromFile(vecVentas, sizeof(vecVentas), "ingresoVentas.dat")) {
         if ((readVecFromFile(vecTelefonos, sizeof(vecTelefonos), "telefonos.dat")) && readVecFromFile(vecPromotores, sizeof(vecPromotores), "promotores.dat")) {
-            //do something
+            for (int i = 0; i < sizeof(vecVentas) / sizeof(vecVentas[0]); i++) {
+                bool telefono_es_valido = false;
+                bool promotor_es_valido = false;
+                for (int j = 0; j < sizeof(vecTelefonos) / sizeof(vecTelefonos[0]); j++) {
+                    std::cout << "vecVentas[" << i << "].descTelefono: " << vecVentas[i].descTelefono << std::endl;
+                    std::cout << "vecTelefonos[" << j << "].desc: " << vecTelefonos[j].desc << std::endl;
+                    if (strcmp(vecVentas[i].descTelefono, vecTelefonos[j].desc) == 0)
+                        telefono_es_valido = true;
+                }
+                for (int j = 0; j < sizeof(vecPromotores) / sizeof(vecPromotores[0]); j++) {
+                    if (strcmp(vecVentas[i].nombrePromotor, vecPromotores[j].nombre) == 0)
+                        promotor_es_valido = true;
+                }
+                if (telefono_es_valido && promotor_es_valido) {
+                    vecVentasValidas[cantidad_validas] = vecVentas[i];
+                    cantidad_validas =+ 1;
+                }
+                else {
+                    vecVentasInvalidas[cantidad_invalidas] = vecVentas[i];
+                    cantidad_invalidas = +1;
+                }
+            }
+            if (saveVecToFile(vecVentasValidas, cantidad_validas * sizeof(venta), "ventasValidas.dat") && saveVecToFile(vecVentasInvalidas, cantidad_invalidas * sizeof(venta), "ventasErroneas.dat"))
+                exit_success = true;
         }
     }
     return exit_success;
